@@ -40,15 +40,24 @@ function RegistrationForm({ toggleForm }) {
       return;
     }
     try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
       const response = await axios.post(
-        "http://cheeky/breeky/chebureky",
-        formData
+        "http://localhost:8080/api/users/register",
+        formData,
+        { headers: headers }
       );
       console.log("User registered successfully:", response.data);
-      message.success(
-        "Registrierung ist erfolgreich, Sie können sich jetzt anmelden",
-        4000
-      );
+      console.log(response);
+      console.log(response.status);
+      if (response.status === 201) {
+        message.success(
+          "Registrierung ist erfolgreich, Sie können sich jetzt anmelden",
+          4000
+        );
+      }
 
       // Reset form data and errors
       setFormData({
@@ -63,6 +72,9 @@ function RegistrationForm({ toggleForm }) {
       });
     } catch (error) {
       console.error("Error registering user:", error);
+      if (error.response && error.response.status === 409) {
+        message.error("Benutzername oder E-Mail bereits registriert", 4000);
+      }
     }
   };
 
