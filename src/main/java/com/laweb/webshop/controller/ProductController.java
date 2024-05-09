@@ -44,6 +44,7 @@ public class ProductController {
                     product.setName(updatedProduct.getName());
                     product.setPrice(updatedProduct.getPrice());
                     product.setDescription(updatedProduct.getDescription());
+                    product.setImageUrl(updatedProduct.getImageUrl());
                     return productRepository.save(product);
                 })
                 .orElseThrow(() -> new RuntimeException("Product not found with id " + id));

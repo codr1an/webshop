@@ -15,14 +15,14 @@ public class Product {
 
     public Product() {}
 
-    public Product(String name, double price, String description, String type) {
+    public Product(String name, double price, String description, String type, String imageUrl) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.type = type;
+        this.imageUrl = imageUrl;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

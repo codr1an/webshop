@@ -41,9 +41,11 @@ const Header = () => {
 const Product = ({ product }) => {
   return (
     <div className="product">
-      <h3>{product.name}</h3>
-      {/*<img src={product.imageUrl} alt={product.name} />*/}  
+      <a href={`/products/${product.id}`} className='product-link'>
+        <h3>{product.name}</h3>
       <p>Price: ${product.price}</p>
+      {product.imageUrl && <img src={require(`../../../../productImages/${product.imageUrl}`)} alt={product.name} />}  
+      </a>
     </div>
   );
 };

@@ -21,16 +21,20 @@
 }
   
 .product {
+    max-width: 100%;
     width: 300px;
     height: 300px;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 10px;
     background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-  
 .product h3 {
-    text-align: left;
+    text-align: center;
     font-size: 18px;
     margin-bottom: 5px;
 }
@@ -38,7 +42,13 @@
 .product p {
     margin: 0;
 }
-  
+ 
+.product img {
+    margin-top: 5px;
+    max-width: 70%;
+    height: auto; 
+    margin-bottom: 10px; 
+}
 
 .menu-buttons-container {
     margin-right: 10px; 
@@ -120,4 +130,15 @@
     max-height: 60px;
     height: auto;
     margin-right: 60px;
+}
+
+.product-link{
+    font-size: 14.5px;
+    text-align: center;
+    color: black;
+    text-decoration: none;
+}
+
+.product-link:hover {
+    text-decoration: underline;
 }
