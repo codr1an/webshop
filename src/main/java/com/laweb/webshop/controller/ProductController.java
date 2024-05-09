@@ -43,7 +43,7 @@ public class ProductController {
                 .map(product -> {
                     product.setName(updatedProduct.getName());
                     product.setPrice(updatedProduct.getPrice());
-                    // Set other properties as needed
+                    product.setDescription(updatedProduct.getDescription());
                     return productRepository.save(product);
                 })
                 .orElseThrow(() -> new RuntimeException("Product not found with id " + id));

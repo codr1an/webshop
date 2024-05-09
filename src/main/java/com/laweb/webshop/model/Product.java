@@ -10,14 +10,16 @@ public class Product {
     private String name;
     private double price;
     private String description;
+    private String type;
+    private String imageUrl;
 
-    // Constructors
     public Product() {}
 
-    public Product(String name, double price, String description) {
+    public Product(String name, double price, String description, String type) {
         this.name = name;
         this.price = price;
         this.description = description;
+        this.type = type;
     }
 
     // Getters and Setters
@@ -51,5 +53,21 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
