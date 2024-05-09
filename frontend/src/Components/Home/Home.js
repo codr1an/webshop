@@ -3,7 +3,6 @@ import "./Home.css";
 import logo from '../Assets/test.png'; 
 import { FaUser, FaShoppingCart} from "react-icons/fa";
 
-
 const CategoriesBar = () => {
   return (
     <div className="categories-bar">
@@ -41,10 +40,10 @@ const Header = () => {
 const Product = ({ product }) => {
   return (
     <div className="product">
-      <a href={`/products/${product.id}`} className='product-link'>
+      <a href={`/products/${product.name}`} className='product-link'>
         <h3>{product.name}</h3>
-      <p>Price: ${product.price}</p>
-      {product.imageUrl && <img src={require(`../../../../productImages/${product.imageUrl}`)} alt={product.name} />}  
+        <p>Price: ${product.price}</p>
+        {product.imageUrl && <img src={require(`../../../../productImages/${product.imageUrl}`)} alt={product.name} />}  
       </a>
     </div>
   );
@@ -52,6 +51,8 @@ const Product = ({ product }) => {
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -67,15 +68,48 @@ const Home = () => {
     fetchProducts();
   }, []);
 
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
   return (
     <div className="front-page">
       <Header />
       <div className="product-grid">
-        {products.slice(0, 10).map(product => (
+        {currentProducts.map(product => (
           <Product key={product.id} product={product} />
         ))}
       </div>
+      <Pagination
+        productsPerPage={productsPerPage}
+        totalProducts={products.length}
+        paginate={paginate}
+      />
     </div>
+  );
+};
+
+const Pagination = ({ productsPerPage, totalProducts, paginate }) => {
+  const pageNumbers = [];
+
+  for (let i = 1; i <= Math.ceil(totalProducts / productsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  return (
+    <nav>
+      <ul className="pagination">
+        {pageNumbers.map(number => (
+          <li key={number} className="page-item">
+            <a onClick={() => paginate(number)} href={'#' + number } className="page-link">
+              {number}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 };
 

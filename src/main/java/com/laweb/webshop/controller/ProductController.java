@@ -30,6 +30,12 @@ public class ProductController {
         return productRepository.findById(id);
     }
 
+    @ApiOperation("Get products by type")
+    @GetMapping("/type/{type}")
+    public List<Product> getProductsByCategory(@PathVariable String type) {
+        return productRepository.findByType(type);
+    }
+
     @ApiOperation("Add a new product")
     @PostMapping
     public Product addProduct(@RequestBody Product product) {
