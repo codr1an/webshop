@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./Home.css";
 import MenuBar from './MenuBar';
 import Pagination from './Pagination'
-import ProductImage from './ProductImage';
+import ProductDetailsOverview from './ProductDetailsOverview';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -34,7 +34,7 @@ const Home = () => {
       <MenuBar />
       <div className="product-grid">
         {currentProducts.map(product => (
-          <ProductImage key={product.id} product={product} />
+          <ProductDetailsOverview key={product.id} product={product} />
         ))}
       </div>
       <Pagination

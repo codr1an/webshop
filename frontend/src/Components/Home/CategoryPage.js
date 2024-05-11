@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import "../Home/Home.css";
 import MenuBar from './MenuBar';
-import ProductImage from './ProductImage';
+import ProductImage from './ProductDetailsOverview';
 
-const ProductPage = ({ type }) => {
+const CategoryPage = ({ type }) => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -32,4 +32,4 @@ const ProductPage = ({ type }) => {
   );
 };
 
-export default ProductPage;
+export default CategoryPage;
