@@ -30,6 +30,12 @@ public class ProductController {
         return productRepository.findById(id);
     }
 
+    @ApiOperation("Get products by type")
+    @GetMapping("/type/{type}")
+    public List<Product> getProductsByCategory(@PathVariable String type) {
+        return productRepository.findByType(type);
+    }
+
     @ApiOperation("Add a new product")
     @PostMapping
     public Product addProduct(@RequestBody Product product) {
@@ -43,7 +49,8 @@ public class ProductController {
                 .map(product -> {
                     product.setName(updatedProduct.getName());
                     product.setPrice(updatedProduct.getPrice());
-                    // Set other properties as needed
+                    product.setDescription(updatedProduct.getDescription());
+                    product.setImageUrl(updatedProduct.getImageUrl());
                     return productRepository.save(product);
                 })
                 .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
