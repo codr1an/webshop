@@ -16,7 +16,7 @@ This repository contains the code for a simple webshop application. Below are th
 
 ## Technologies Used
 
-- **Frontend**: HTML, CSS, JavaScript
+- **Frontend**: React
 - **Backend**: Spring boot
-- **Database**: not defined yet
-- **Authentication**: not defined yet
+- **Database**: MySQL (hosted through XAMPP)
+- **Authentication**: Spring Security
