@@ -23,7 +23,6 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    // TODO: remove in production
     http.csrf().disable().cors().disable();
     // We need to make sure our authentication filter is run before the http request filter is run.
     http.addFilterBefore(jwtRequestFilter, AuthorizationFilter.class);

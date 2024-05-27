@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import "./LoginForm.css";
 import { CiUser, CiLock } from "react-icons/ci";
 import LoginRequest from "./LoginRequest";
+import { useNavigate } from "react-router-dom";
 
 function LoginForm({ toggleForm }) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -24,7 +26,12 @@ function LoginForm({ toggleForm }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    LoginRequest(formData);
+    const token = await LoginRequest(formData);
+    localStorage.setItem("token", token);
+    console.log(token);
+    if (token !== null) {
+      navigate("/profile");
+    }
   };
 
   return (
