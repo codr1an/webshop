@@ -2,6 +2,7 @@ package com.laweb.webshop.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.laweb.webshop.model.User;
 
 import jakarta.annotation.PostConstruct;
@@ -47,12 +48,15 @@ public class JWTService {
     return JWT.create()
         .withClaim(USERNAME_KEY, user.getUsername())
         .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * expiryInSeconds)))
+        .withIssuedAt(new Date())
         .withIssuer(issuer)
+        .withSubject(user.getId().toString()) // Assuming User has an ID
         .sign(algorithm);
   }
 
   public String getUsername(String token) {
-    return JWT.decode(token).getClaim(USERNAME_KEY).asString();
+    DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
+    return jwt.getClaim(USERNAME_KEY).asString();
   }
   
 }
