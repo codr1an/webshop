@@ -1,15 +1,16 @@
 import axios from "axios";
+import { message } from "react-message-popup";
 
 const LoginRequest = async (formData) => {
-
   try {
-    const response = await axios.post("test/login", {
+    const response = await axios.post("http://localhost:8080/api/users/login", {
       username: formData.username,
       password: formData.password,
     });
 
-    // Handle response based on your backend logic
-    console.log("Login successful:", response.data);
+    message.success("Erfolgreich angemeldet!", 2500);
+
+    return response.data.jwt;
   } catch (error) {
     // Handle errors
     console.error("Login failed:", error);
