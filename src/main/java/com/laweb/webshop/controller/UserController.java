@@ -1,14 +1,20 @@
 package com.laweb.webshop.controller;
 
+import com.laweb.webshop.model.response.LoginResponse;
 import com.laweb.webshop.model.User;
+import com.laweb.webshop.model.LoginBody;
+import com.laweb.webshop.model.RegistrationBody;
 import com.laweb.webshop.repository.UserRepository;
+import com.laweb.webshop.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,10 +24,11 @@ import java.util.List;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    @Autowired
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Operation(summary = "Register a new user")
@@ -30,18 +37,25 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Username or email already exists")
     })
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        // Check if username or email already exists
-        if (userRepository.findByUsername(user.getUsername()) != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-        if (userRepository.findByEmail(user.getEmail()) != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+    public ResponseEntity<User> registerUser(@RequestBody RegistrationBody userDto) {
+        return userService.registerUser(userDto);
+    }
 
-        // Save the new user
-        userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    @Operation(summary = "Login user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginBody loginBody) {
+        String jwt = userService.loginUser(loginBody);
+        if (jwt == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } else {
+        LoginResponse response = new LoginResponse();
+        response.setJwt(jwt);
+        return ResponseEntity.ok(response);
+        }
     }
 
     @Operation(summary = "Get all users")
@@ -97,5 +111,10 @@ public class UserController {
         }
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public User getLoggedInUserProfile(@AuthenticationPrincipal User user) {
+      return user;
     }
 }

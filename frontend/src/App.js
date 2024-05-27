@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./Components/LoginForm/LoginForm";
 import RegisterForm from "./Components/RegisterForm/RegisterForm";
 import Home from "./Components/Home/Home";
-import CategoryPage from "./Components/Home/CategoryPage"
-import ProductPage  from "./Components/Home/ProductPage";
+import CategoryPage from "./Components/Home/CategoryPage";
+import ProductPage from "./Components/Home/ProductPage";
 
 const App = () => {
   return (
