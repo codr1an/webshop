@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import logo from "../Assets/test.png";
-import { FaUser, FaShoppingCart } from "react-icons/fa";
-import "./MenuBar.css";
+import React, { useEffect, useState } from "react";
+import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import logo from "../../Assets/logo.png";
+import { message } from "react-message-popup";
+import "./MenuBar.css";
 
 const MenuBar = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const MenuBar = () => {
     } else if (option === "register") {
       navigate("/register");
     } else if (option === "logout") {
+      message.success("You have been logged out", 1500);
       localStorage.removeItem("token");
       setToken(null);
       navigate("/home");

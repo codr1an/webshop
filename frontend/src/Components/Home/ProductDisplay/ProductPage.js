@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import MenuBar from "./MenuBar";
+import MenuBar from "../MenuBar/MenuBar";
 import ProductDetailsExtended from "./ProductDetailsExtended";
 import "./ProductPage.css";
 

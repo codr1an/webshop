@@ -33,10 +33,10 @@ function RegistrationForm({ toggleForm }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = validateForm(formData); // Validate form data
+    const errors = validateForm(formData);
     if (Object.values(errors).some((error) => error !== "")) {
       setFormErrors(errors);
-      message.error("Ein Fehler ist bei der Registrierung aufgetreten", 4000);
+      message.error("An error occured while registering", 4000);
       return;
     }
     try {
@@ -49,17 +49,10 @@ function RegistrationForm({ toggleForm }) {
         formData,
         { headers: headers }
       );
-      console.log("User registered successfully:", response.data);
-      console.log(response);
-      console.log(response.status);
       if (response.status === 201) {
-        message.success(
-          "Registrierung ist erfolgreich, Sie können sich jetzt anmelden",
-          4000
-        );
+        message.success("Succesfully registered, you may log in.", 4000);
       }
 
-      // Reset form data and errors
       setFormData({
         username: "",
         email: "",
@@ -73,7 +66,7 @@ function RegistrationForm({ toggleForm }) {
     } catch (error) {
       console.error("Error registering user:", error);
       if (error.response && error.response.status === 409) {
-        message.error("Benutzername oder E-Mail bereits registriert", 4000);
+        message.error("Username or Email already registered", 4000);
       }
     }
   };

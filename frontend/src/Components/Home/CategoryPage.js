@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../Home/Home.css";
-import MenuBar from "./MenuBar";
-import ProductImage from "./ProductDetailsOverview";
+import MenuBar from "./MenuBar/MenuBar";
+import ProductImage from "./ProductDisplay/ProductDetailsOverview";
 
 const CategoryPage = ({ type }) => {
   const [products, setProducts] = useState([]);

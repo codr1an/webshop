@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./Home.css";
-import MenuBar from "./MenuBar";
+import MenuBar from "./MenuBar/MenuBar";
 import Pagination from "./Pagination";
-import ProductDetailsOverview from "./ProductDetailsOverview";
+import ProductDetailsOverview from "./ProductDisplay/ProductDetailsOverview";
 
 const Home = () => {
   const [products, setProducts] = useState([]);

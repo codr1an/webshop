@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./UserProfile.css";
-import MenuBar from "../Home/MenuBar";
+import MenuBar from "../Home/MenuBar/MenuBar";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);

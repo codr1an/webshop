@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ShoppingCart.css";
-import MenuBar from "../Home/MenuBar";
+import MenuBar from "../Home/MenuBar/MenuBar";
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
