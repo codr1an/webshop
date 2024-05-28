@@ -16,6 +16,8 @@ public class ShoppingCart {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items;
 
+    private double totalPrice;
+
     public Long getId() {
         return id;
     }
@@ -40,4 +42,19 @@ public class ShoppingCart {
         this.items = items;
     }
 
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public void updateTotalPrice() {
+        this.totalPrice = items.stream()
+                .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                .sum();
+    }
+
+    // Getters and Setters
 }

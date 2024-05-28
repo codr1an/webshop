@@ -37,7 +37,9 @@ public class ShoppingCartController {
             cartRepository.save(cart);
             return ResponseEntity.ok(cart);
         }
-        return ResponseEntity.ok(cartOpt.get());
+        ShoppingCart cart = cartOpt.get();
+        cart.updateTotalPrice();
+        return ResponseEntity.ok(cart);
     }
 
     @Operation(summary = "Add item to cart")
@@ -60,6 +62,7 @@ public class ShoppingCartController {
         cartItem.setQuantity(addItemRequest.getQuantity());
 
         cart.getItems().add(cartItem);
+        cart.updateTotalPrice();
         cartRepository.save(cart);
 
         return ResponseEntity.ok(cart);
@@ -88,14 +91,15 @@ public class ShoppingCartController {
         // Update the quantity if the new quantity is greater than 0
         if (newQuantity > 0) {
             cartItem.setQuantity(newQuantity);
-            cartRepository.save(cart);
-            return ResponseEntity.ok(cart);
         } else {
             // If the new quantity is 0 or negative, remove the item from the cart
             cart.getItems().remove(cartItem);
-            cartRepository.save(cart);
-            return ResponseEntity.ok(cart);
         }
+
+        cart.updateTotalPrice();
+        cartRepository.save(cart);
+
+        return ResponseEntity.ok(cart);
     }
 
     @Operation(summary = "Delete item from cart")
@@ -107,6 +111,7 @@ public class ShoppingCartController {
         }
 
         cart.getItems().removeIf(item -> item.getId().equals(removeItemRequest.getItemId()));
+        cart.updateTotalPrice();
         cartRepository.save(cart);
 
         return ResponseEntity.noContent().build();
@@ -121,6 +126,7 @@ public class ShoppingCartController {
         }
 
         cart.getItems().clear();
+        cart.updateTotalPrice();
         cartRepository.save(cart);
 
         return ResponseEntity.noContent().build();
