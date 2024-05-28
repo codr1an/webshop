@@ -2,6 +2,7 @@ package com.laweb.webshop.controller;
 
 import com.laweb.webshop.dto.AddItemRequest;
 import com.laweb.webshop.dto.RemoveItemRequest;
+import com.laweb.webshop.dto.UpdateItemQuantityRequest;
 import com.laweb.webshop.model.*;
 import com.laweb.webshop.repository.ProductRepository;
 import com.laweb.webshop.repository.ShoppingCartRepository;
@@ -62,6 +63,39 @@ public class ShoppingCartController {
         cartRepository.save(cart);
 
         return ResponseEntity.ok(cart);
+    }
+
+    @Operation(summary = "Update quantity of a product in the cart")
+    @PutMapping("/update")
+    public ResponseEntity<ShoppingCart> updateCartItemQuantity(@AuthenticationPrincipal User user, @RequestBody UpdateItemQuantityRequest updateItemQuantityRequest) {
+        ShoppingCart cart = cartRepository.findByUser(user).orElse(null);
+        if (cart == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // Find the CartItem by its ID
+        Optional<CartItem> cartItemOpt = cart.getItems().stream()
+                .filter(item -> item.getId().equals(updateItemQuantityRequest.getItemId()))
+                .findFirst();
+
+        if (cartItemOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        CartItem cartItem = cartItemOpt.get();
+        int newQuantity = updateItemQuantityRequest.getQuantity();
+
+        // Update the quantity if the new quantity is greater than 0
+        if (newQuantity > 0) {
+            cartItem.setQuantity(newQuantity);
+            cartRepository.save(cart);
+            return ResponseEntity.ok(cart);
+        } else {
+            // If the new quantity is 0 or negative, remove the item from the cart
+            cart.getItems().remove(cartItem);
+            cartRepository.save(cart);
+            return ResponseEntity.ok(cart);
+        }
     }
 
     @Operation(summary = "Delete item from cart")
