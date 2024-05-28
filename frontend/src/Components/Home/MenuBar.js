@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from "react";
 import logo from "../Assets/test.png";
 import { FaUser, FaShoppingCart } from "react-icons/fa";
-import CategoryBar from "./CategoryBar";
 import "./MenuBar.css";
 import { useNavigate } from "react-router-dom";
-import { fetchCartItemCount } from "../ShoppingCart/CartUtils";
 
 const MenuBar = () => {
   const navigate = useNavigate();
-  const [cartItemCount, setCartItemCount] = useState(0);
+  const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const getCartItemCount = async () => {
-      const itemCount = await fetchCartItemCount();
-      setCartItemCount(itemCount);
-    };
-    getCartItemCount();
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    }
   }, []);
 
   const handleUserMenu = () => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    setUserMenuOpen(!isUserMenuOpen);
+  };
+
+  const handleUserOption = (option) => {
+    if (option === "profile") {
       navigate("/profile");
-    } else {
+    } else if (option === "login") {
       navigate("/login");
+    } else if (option === "register") {
+      navigate("/register");
+    } else if (option === "logout") {
+      localStorage.removeItem("token");
+      setToken(null);
+      navigate("/home");
     }
+    setUserMenuOpen(false);
   };
 
   const handleCart = () => {
@@ -35,9 +43,12 @@ const MenuBar = () => {
     <header>
       <div className="menu-container">
         <div className="menu-bar">
-          <div className="logo">
-            <a href="/home">
-              <img src={logo} alt="Logo" />
+          <div class="logo-container">
+            <a href="/home" class="logo-link">
+              <img src={logo} alt="Logo" class="logo-img" />
+            </a>
+            <a href="/home" class="logo-text-link">
+              <h2 class="logo-text">LA-Shop</h2>
             </a>
           </div>
           <div className="search-bar">
@@ -47,15 +58,51 @@ const MenuBar = () => {
             <button className="menu-buttons" onClick={handleUserMenu}>
               <FaUser />
             </button>
+            {isUserMenuOpen && (
+              <div className="dropdown-menu">
+                {token !== null ? (
+                  <>
+                    <button onClick={() => handleUserOption("profile")}>
+                      Profile
+                    </button>
+                    <button onClick={() => handleUserOption("logout")}>
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => handleUserOption("login")}>
+                      Login
+                    </button>
+                    <button onClick={() => handleUserOption("register")}>
+                      Register
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
             <button className="menu-buttons" onClick={handleCart}>
               <FaShoppingCart />
-              {cartItemCount > 0 && (
-                <span className="cart-item-count">{cartItemCount}</span>
-              )}
             </button>
           </div>
+          <div className="categories-bar">
+            <a href="/phones" className="category">
+              Phones
+            </a>
+            <a href="/tablets" className="category">
+              Tablets
+            </a>
+            <a href="/laptops" className="category">
+              Laptops
+            </a>
+            <a href="/tvs" className="category">
+              TVs
+            </a>
+            <a href="/monitors" className="category">
+              Monitors
+            </a>
+          </div>{" "}
         </div>
-        <CategoryBar />
       </div>
     </header>
   );

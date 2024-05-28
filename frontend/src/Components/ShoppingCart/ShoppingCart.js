@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./ShoppingCart.css";
 import MenuBar from "../Home/MenuBar";
 
 const ShoppingCart = () => {
+  const navigate = useNavigate();
   const [cart, setCart] = useState(null);
 
   useEffect(() => {
-    const fetchCart = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("No token found");
-        return;
-      }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
 
+    const fetchCart = async () => {
       try {
         const response = await fetch("http://localhost:8080/api/cart", {
           method: "GET",
@@ -34,7 +36,7 @@ const ShoppingCart = () => {
     };
 
     fetchCart();
-  }, []);
+  }, [navigate]);
 
   const handleDelete = async (itemId) => {
     const token = localStorage.getItem("token");
@@ -150,46 +152,48 @@ const ShoppingCart = () => {
   );
 
   return (
-    <div className="cart-page">
+    <div className="front-page">
       <MenuBar />
-      <div className="cart-container">
-        <div className="cart-items">
-          {cart.items.map((item) => (
-            <div key={item.id} className="cart-item">
-              <img
-                src={require(`../../../../productImages/${item.product.imageUrl}`)}
-                alt={item.product.name}
-              />
-              <div className="item-details">
-                <h3>{item.product.name}</h3>
-                <p>Price: ${item.product.price}</p>
+      <div className="cart-page">
+        <div className="cart-container">
+          <div className="cart-items">
+            {cart.items.map((item) => (
+              <div key={item.id} className="cart-item">
+                <img
+                  src={require(`../../../../productImages/${item.product.imageUrl}`)}
+                  alt={item.product.name}
+                />
+                <div className="item-details">
+                  <h3>{item.product.name}</h3>
+                  <p>Price: ${item.product.price}</p>
+                </div>
+                <div className="item-actions">
+                  <select
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleQuantityChange(item.id, Number(e.target.value))
+                    }
+                  >
+                    {[...Array(10).keys()].map((i) => (
+                      <option key={i + 1} value={i + 1}>
+                        {i + 1}
+                      </option>
+                    ))}
+                  </select>
+                  <button onClick={() => handleDelete(item.id)}>Delete</button>
+                </div>
               </div>
-              <div className="item-actions">
-                <select
-                  value={item.quantity}
-                  onChange={(e) =>
-                    handleQuantityChange(item.id, Number(e.target.value))
-                  }
-                >
-                  {[...Array(10).keys()].map((i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </select>
-                <button onClick={() => handleDelete(item.id)}>Delete</button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="cart-overview">
-          <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
-          <button className="order-button">Order Now</button>
+            ))}
+          </div>
+          <div className="cart-overview">
+            <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
+            <button className="order-button">Order Now</button>
+          </div>
+          <button className="clear-button" onClick={handleClearCart}>
+            Clear cart
+          </button>
         </div>
       </div>
-      <button className="clear-button" onClick={handleClearCart}>
-        Clear cart
-      </button>
     </div>
   );
 };

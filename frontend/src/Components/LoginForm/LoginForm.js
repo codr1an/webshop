@@ -30,7 +30,7 @@ function LoginForm({ toggleForm }) {
     localStorage.setItem("token", token);
     console.log(token);
     if (token !== null) {
-      navigate("/profile");
+      navigate("/home");
     }
   };
 

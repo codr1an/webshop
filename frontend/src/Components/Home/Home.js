@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import "./Home.css";
-import MenuBar from './MenuBar';
-import Pagination from './Pagination'
-import ProductDetailsOverview from './ProductDetailsOverview';
+import MenuBar from "./MenuBar";
+import Pagination from "./Pagination";
+import ProductDetailsOverview from "./ProductDetailsOverview";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -12,11 +12,11 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/products');
+        const response = await fetch("http://localhost:8080/api/products");
         const data = await response.json();
         setProducts(data);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
       }
     };
 
@@ -25,26 +25,31 @@ const Home = () => {
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = products.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
-  const paginate = pageNumber => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="front-page">
-      <MenuBar />
-      <div className="product-grid">
-        {currentProducts.map(product => (
-          <ProductDetailsOverview key={product.id} product={product} />
-        ))}
+    <div>
+      <div className="front-page">
+        <MenuBar />
+
+        <div className="product-grid">
+          {currentProducts.map((product) => (
+            <ProductDetailsOverview key={product.id} product={product} />
+          ))}
+        </div>
+        <Pagination
+          productsPerPage={productsPerPage}
+          totalProducts={products.length}
+          paginate={paginate}
+        />
       </div>
-      <Pagination
-        productsPerPage={productsPerPage}
-        totalProducts={products.length}
-        paginate={paginate}
-      />
     </div>
   );
 };
-
 
 export default Home;

@@ -1,10 +1,14 @@
 import React from "react";
+import { message } from "react-message-popup";
+import { useNavigate } from "react-router-dom";
 
 const ProductDetails = ({ product }) => {
+  const navigate = useNavigate();
   const handleAddToCart = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("No token found");
+      navigate("/login");
       return;
     }
 
@@ -22,6 +26,7 @@ const ProductDetails = ({ product }) => {
         throw new Error("Failed to add product to cart");
       }
 
+      message.success("Item added", 1500);
       console.log("Product added to cart successfully");
     } catch (error) {
       console.error("Error adding product to cart:", error);

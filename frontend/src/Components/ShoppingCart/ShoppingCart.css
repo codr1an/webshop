@@ -3,17 +3,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 100px;
 }
 
 .cart-container {
   display: flex;
   width: 100%;
   max-width: 1000px;
+  position: relative; /* Set position to relative */
 }
 
 .cart-items {
   width: 800px;
-  height: 600px;
+  height: 602px;
   overflow-y: auto;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -112,7 +114,6 @@
 }
 
 .clear-button {
-  margin-top: 30px;
   width: 100px;
   height: 30px;
   background: red;
@@ -124,5 +125,7 @@
   font-size: 16px;
   color: white;
   font-weight: 700;
-  margin-left: 430px;
+  position: absolute;
+  bottom: 10px; /* Adjust as needed */
+  right: 40px; /* Adjust as needed */
 }

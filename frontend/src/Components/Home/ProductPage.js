@@ -31,8 +31,10 @@ const ProductPage = () => {
   return (
     <div className="front-page">
       <MenuBar />
-      <div className="product-page">
-        <ProductDetailsExtended key={product.id} product={product} />
+      <div className="product-page-container">
+        <div className="product-page">
+          <ProductDetailsExtended key={product.id} product={product} />
+        </div>
       </div>
     </div>
   );

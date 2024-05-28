@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import "../Home/Home.css";
-import MenuBar from './MenuBar';
-import ProductImage from './ProductDetailsOverview';
+import MenuBar from "./MenuBar";
+import ProductImage from "./ProductDetailsOverview";
 
 const CategoryPage = ({ type }) => {
   const [products, setProducts] = useState([]);
@@ -9,7 +9,9 @@ const CategoryPage = ({ type }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/products/type/${type}`);
+        const response = await fetch(
+          `http://localhost:8080/api/products/type/${type}`
+        );
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -24,7 +26,7 @@ const CategoryPage = ({ type }) => {
     <div className="front-page">
       <MenuBar />
       <div className="product-grid">
-        {products.map(product => (
+        {products.map((product) => (
           <ProductImage key={product.id} product={product} />
         ))}
       </div>
