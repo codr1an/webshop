@@ -29,6 +29,7 @@ public class JWTService {
   private Algorithm algorithm;
   /** The JWT claim key for the username. */
   private static final String USERNAME_KEY = "USERNAME";
+  private static final String ROLE_KEY = "ROLE";
 
   /**
    * Post construction method.
@@ -46,6 +47,7 @@ public class JWTService {
   public String generateJWT(User user) {
     return JWT.create()
         .withClaim(USERNAME_KEY, user.getUsername())
+        .withClaim(ROLE_KEY, user.getRole())
         .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * expiryInSeconds)))
         .withIssuedAt(new Date())
         .withIssuer(issuer)

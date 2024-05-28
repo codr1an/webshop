@@ -16,7 +16,7 @@ public class User {
     @JsonIgnore
     private String password;
 
-    // Constructors, getters, and setters
+    private String role = "user";  // Default value for the role, every new account is going to be a user
 
     public User() {}
 
@@ -26,7 +26,12 @@ public class User {
         this.password = password;
     }
 
-    // Getters and Setters
+    public User(String username, String email, String password, String role) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 
     public Long getId() {
         return id;
@@ -59,4 +64,10 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getRole() {
+        return role;
+    }
+
+    // No setRole method to ensure role can only be changed via the database
 }
