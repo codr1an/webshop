@@ -8,11 +8,10 @@ const LoginRequest = async (formData) => {
       password: formData.password,
     });
 
-    message.success("Erfolgreich angemeldet!", 2500);
+    message.success("Successfully logged in", 1500);
 
     return response.data.jwt;
   } catch (error) {
-    // Handle errors
     console.error("Login failed:", error);
   }
 };

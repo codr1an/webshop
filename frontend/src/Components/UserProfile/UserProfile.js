@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./UserProfile.css";
+import MenuBar from "../Home/MenuBar/MenuBar";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -20,7 +21,7 @@ const UserProfile = () => {
           headers: headers,
         });
 
-        setUser(response.data); // Assuming response.data contains user information
+        setUser(response.data);
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -44,23 +45,28 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="user-profile">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{user.id}</td>
-            <td>{user.username}</td>
-            <td>{user.email}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="front-page">
+      <MenuBar />
+      <div className="user-dashboard">
+        <div className="user-profile">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{user.id}</td>
+                <td>{user.username}</td>
+                <td>{user.email}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
