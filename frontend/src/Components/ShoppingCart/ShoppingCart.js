@@ -98,6 +98,48 @@ const ShoppingCart = () => {
     }
   };
 
+  const handleClearCart = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/cart/clear`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to clear cart");
+      }
+
+      const updatedCartResponse = await fetch(
+        "http://localhost:8080/api/cart",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!updatedCartResponse.ok) {
+        throw new Error("Failed to fetch updated cart");
+      }
+
+      const updatedCartData = await updatedCartResponse.json();
+      setCart(updatedCartData);
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
+  };
+
   if (!cart) {
     return <div>Loading...</div>;
   }
@@ -145,6 +187,9 @@ const ShoppingCart = () => {
           <button className="order-button">Order Now</button>
         </div>
       </div>
+      <button className="clear-button" onClick={handleClearCart}>
+        Clear cart
+      </button>
     </div>
   );
 };

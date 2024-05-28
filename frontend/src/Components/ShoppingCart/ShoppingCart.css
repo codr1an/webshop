@@ -110,3 +110,19 @@
   background-color: rgba(90, 139, 50, 0.3);
   border-radius: 6px;
 }
+
+.clear-button {
+  margin-top: 30px;
+  width: 100px;
+  height: 30px;
+  background: red;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  font-weight: 700;
+  margin-left: 430px;
+}
