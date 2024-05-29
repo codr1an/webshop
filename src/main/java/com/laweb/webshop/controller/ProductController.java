@@ -5,6 +5,7 @@ import com.laweb.webshop.repository.ProductRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,12 +38,14 @@ public class ProductController {
         return productRepository.findByType(type);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @ApiOperation("Add a new product")
     @PostMapping
     public Product addProduct(@RequestBody Product product) {
         return productRepository.save(product);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @ApiOperation("Update a product")
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
@@ -57,6 +60,7 @@ public class ProductController {
                 .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
     }
 
+    @PreAuthorize("hasRole('admin')")
     @ApiOperation("Delete a product")
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id) {

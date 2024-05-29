@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('admin')")
     @Operation(summary = "Get all users")
     @GetMapping
     public List<User> getAllUsers() {
@@ -78,6 +80,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @Operation(summary = "Update user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User updated"),
@@ -93,12 +96,14 @@ public class UserController {
 
         user.setUsername(updatedUser.getUsername());
         user.setEmail(updatedUser.getEmail());
-        user.setPassword(updatedUser.getPassword()); // Note: Password update should be handled securely
+        // TODO: add password resetting
+        user.setPassword(updatedUser.getPassword());
 
         userRepository.save(user);
         return ResponseEntity.ok(user);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @Operation(summary = "Delete user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User deleted"),
@@ -112,7 +117,7 @@ public class UserController {
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
+    
     @GetMapping("/me")
     public User getLoggedInUserProfile(@AuthenticationPrincipal User user) {
       return user;

@@ -6,7 +6,6 @@ import com.laweb.webshop.dto.UpdateItemQuantityRequest;
 import com.laweb.webshop.model.*;
 import com.laweb.webshop.repository.ProductRepository;
 import com.laweb.webshop.repository.ShoppingCartRepository;
-import com.laweb.webshop.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-
+// TODO: Change endpoint names after rest standard
 @RestController
 @RequestMapping("/api/cart")
 public class ShoppingCartController {
@@ -76,7 +75,6 @@ public class ShoppingCartController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        // Find the CartItem by its ID
         Optional<CartItem> cartItemOpt = cart.getItems().stream()
                 .filter(item -> item.getId().equals(updateItemQuantityRequest.getItemId()))
                 .findFirst();
@@ -88,11 +86,9 @@ public class ShoppingCartController {
         CartItem cartItem = cartItemOpt.get();
         int newQuantity = updateItemQuantityRequest.getQuantity();
 
-        // Update the quantity if the new quantity is greater than 0
         if (newQuantity > 0) {
             cartItem.setQuantity(newQuantity);
         } else {
-            // If the new quantity is 0 or negative, remove the item from the cart
             cart.getItems().remove(cartItem);
         }
 
