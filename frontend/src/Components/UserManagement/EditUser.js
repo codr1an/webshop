@@ -1,16 +1,20 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CiLock, CiMail, CiUser } from "react-icons/ci";
 import { message } from "react-message-popup";
-import "./RegisterForm.css";
-import { validateForm } from "./RegisterValidation";
+import "../RegisterForm/RegisterForm.css";
+import { editValidateForm } from "./EditUserValidation";
+import { useNavigate, useParams } from "react-router-dom";
 
-function RegistrationForm({ toggleForm }) {
+function EditUser({ toggleForm }) {
+  const { userId } = useParams();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
+    username: "",
     firstName: "",
     lastName: "",
     address: "",
-    username: "",
     email: "",
     password: "",
   });
@@ -19,19 +23,46 @@ function RegistrationForm({ toggleForm }) {
     firstName: "",
     lastName: "",
     address: "",
-    username: "",
     email: "",
     password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8080/api/users/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const userData = response.data;
+        setFormData({
+          username: userData.username,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          address: userData.address,
+          email: userData.email,
+          password: "",
+        });
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, [userId]);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-    // Clear any errors when user types
     setFormErrors({
       ...formErrors,
       [e.target.name]: "",
@@ -44,50 +75,44 @@ function RegistrationForm({ toggleForm }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = validateForm(formData);
+    const errors = editValidateForm(formData);
+    console.log("Errors:", errors);
     if (Object.values(errors).some((error) => error !== "")) {
+      console.log("Errors detected, not submitting the form");
       setFormErrors(errors);
-      message.error("Ein Fehler ist bei der Registrierung aufgetreten", 4000);
+      message.error("Please fill all fields", 4000);
       return;
     }
     try {
+      const token = localStorage.getItem("token");
       const headers = {
         accept: "*/*",
         "x-api-key": "keyTest",
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Add Authorization header
       };
 
-      const response = await axios.post(
-        "http://localhost:8080/api/users/register",
+      const response = await axios.put(
+        `http://localhost:8080/api/users/${userId}`,
         formData,
         { headers: headers }
       );
-      console.log("User registered successfully:", response.data);
-      if (response.status === 201) {
-        message.success("Registration successful, you may log in", 4000);
+      console.log("User updated successfully:", response.data);
+      if (response.status === 200) {
+        message.success("Update successful", 4000);
+        navigate("/user-management");
       }
-
-      // Reset form data
-      setFormData({
-        firstName: "",
-        lastName: "",
-        address: "",
-        username: "",
-        email: "",
-        password: "",
-      });
     } catch (error) {
+      console.error("Error updating user:", error);
       if (error.response && error.response.status === 409) {
-        message.error("Username or E-Mail already registered", 4000);
-      } else {
-        message.error("Something went wrong, please try again later", 4000);
+        message.error("Benutzername oder E-Mail bereits registriert", 4000);
       }
     }
   };
 
   return (
     <div className="wrapper">
-      <h1>Register</h1>
+      <h1>Edit User</h1>
       <form onSubmit={handleSubmit}>
         <div className="names">
           <div
@@ -137,20 +162,6 @@ function RegistrationForm({ toggleForm }) {
             <p className="error-message">{formErrors.address}</p>
           )}
         </div>
-        <div className={`input-box ${formErrors.username && "error-message"}`}>
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            maxLength={100}
-          />
-          <CiUser className="icon" />
-          {formErrors.username && (
-            <p className="error-message">{formErrors.username}</p>
-          )}
-        </div>
         <div className={`input-box ${formErrors.email && "error-message"}`}>
           <input
             type="email"
@@ -184,16 +195,11 @@ function RegistrationForm({ toggleForm }) {
           )}
         </div>
         <button type="submit" className="button">
-          Register
+          Update
         </button>
-        <div className="login-link">
-          <p>
-            Already registered? <a href="login">Log in</a>
-          </p>
-        </div>
       </form>
     </div>
   );
 }
 
-export default RegistrationForm;
+export default EditUser;

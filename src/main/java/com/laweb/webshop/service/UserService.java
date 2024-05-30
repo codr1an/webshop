@@ -1,5 +1,6 @@
 package com.laweb.webshop.service;
 import com.laweb.webshop.model.User;
+import com.laweb.webshop.dto.UpdateUserDTO;
 import com.laweb.webshop.model.LoginBody;
 import com.laweb.webshop.model.RegistrationBody;
 import com.laweb.webshop.repository.UserRepository;
@@ -45,12 +46,39 @@ public class UserService {
       User user = new User();
       user.setUsername(userDto.getUsername());
       user.setEmail(userDto.getEmail());
+      user.setAddress(userDto.getAddress());
+      user.setFirstName(userDto.getFirstName());
+      user.setLastName(userDto.getLastName());
       user.setPassword(encryptedPassword);
   
       // Save the new user
       userRepository.save(user);
       return ResponseEntity.status(HttpStatus.CREATED).body(user);
-  }
+    }
+
+     public ResponseEntity<User> updateUser(Long id, UpdateUserDTO updatedUserDto) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            // Update user fields
+            user.setEmail(updatedUserDto.getEmail());
+            user.setFirstName(updatedUserDto.getFirstName());
+            user.setLastName(updatedUserDto.getLastName());
+            user.setAddress(updatedUserDto.getAddress());
+
+            // Hash the new password if provided
+            if (updatedUserDto.getPassword() != null && !updatedUserDto.getPassword().isEmpty()) {
+                String encryptedPassword = encryptingService.encryptPassword(updatedUserDto.getPassword());
+                user.setPassword(encryptedPassword);
+            }
+
+            userRepository.save(user);
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     public String loginUser(LoginBody loginBody) {
         Optional<User> opUser = userRepository.findByUsername(loginBody.getUsername());
         if (opUser.isPresent()) {

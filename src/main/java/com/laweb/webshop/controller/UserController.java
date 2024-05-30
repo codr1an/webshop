@@ -2,6 +2,7 @@ package com.laweb.webshop.controller;
 
 import com.laweb.webshop.model.response.LoginResponse;
 import com.laweb.webshop.model.User;
+import com.laweb.webshop.dto.UpdateUserDTO;
 import com.laweb.webshop.model.LoginBody;
 import com.laweb.webshop.model.RegistrationBody;
 import com.laweb.webshop.repository.UserRepository;
@@ -37,11 +38,12 @@ public class UserController {
             @ApiResponse(responseCode = "201", description = "User created"),
             @ApiResponse(responseCode = "409", description = "Username or email already exists")
     })
+    
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody RegistrationBody userDto) {
         return userService.registerUser(userDto);
     }
-
+    
     @Operation(summary = "Login user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Login successful"),
@@ -88,21 +90,11 @@ public class UserController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@Parameter(description = "User ID") @PathVariable Long id,
-                                           @RequestBody User updatedUser) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        user.setUsername(updatedUser.getUsername());
-        user.setEmail(updatedUser.getEmail());
-        // TODO: add password resetting
-        user.setPassword(updatedUser.getPassword());
-
-        userRepository.save(user);
-        return ResponseEntity.ok(user);
+                                           @Valid @RequestBody UpdateUserDTO updatedUserDto) {
+        ResponseEntity<User> responseEntity = userService.updateUser(id, updatedUserDto);
+        return responseEntity;
     }
-
+    
     @PreAuthorize("hasRole('admin')")
     @Operation(summary = "Delete user")
     @ApiResponses(value = {
