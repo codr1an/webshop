@@ -22,7 +22,7 @@ If you don't host your Database locally using XAMPP you will have to update the 
 
 - [x] **User Login**: Registered users can log in to their accounts using their credentials.
 
-- [ ] **User Management**: Admins can manage users, including viewing user details, updating user information, and deleting user accounts.
+- [x] **User Management**: Admins can manage users, including viewing user details, updating user information, and deleting user accounts.
 
 - [ ] **Product Management**: Admins can manage products available in the webshop, including adding new products, updating existing ones, and removing products.
 
@@ -44,7 +44,7 @@ If you don't host your Database locally using XAMPP you will have to update the 
 | Name        | Matrikel number | Github account |
 | ----------- | --------------- | -------------- |
 | Adrian Popa | matrikel no     | codr1an        |
-| Lars Krickl | matrikel no     | Larsk7         |
+| Lars Krickl | 2512317         | Larsk7         |
 
 ## Using the app
 

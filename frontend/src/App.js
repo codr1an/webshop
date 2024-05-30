@@ -7,6 +7,8 @@ import LoginForm from "./Components/LoginForm/LoginForm";
 import RegisterForm from "./Components/RegisterForm/RegisterForm";
 import ShoppingCart from "./Components/ShoppingCart/ShoppingCart";
 import UserProfile from "./Components/UserProfile/UserProfile";
+import UserManagement from "./Components/UserManagement/UserManagement";
+import EditUser from "./Components/UserManagement/EditUser";
 
 const App = () => {
   return (
@@ -24,6 +26,8 @@ const App = () => {
         <Route path="/tvs" element={<CategoryPage type="tv" />} />
         <Route path="/tablets" element={<CategoryPage type="tablet" />} />
         <Route path="/products/:id" element={<ProductPage />} />
+        <Route path="/user-management" element={<UserManagement />} />
+        <Route path="/edit-user/:userId" element={<EditUser />} />
       </Routes>
     </Router>
   );
