@@ -29,7 +29,7 @@ function LoginForm({ toggleForm }) {
     const token = await LoginRequest(formData);
     localStorage.setItem("token", token);
     console.log(token);
-    if (token !== null) {
+    if (token !== undefined) {
       navigate("/home");
     }
   };
