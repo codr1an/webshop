@@ -8,11 +8,14 @@ const LoginRequest = async (formData) => {
       password: formData.password,
     });
 
-    message.success("Successfully logged in", 1500);
-
-    return response.data.jwt;
+    if (response.status === 200) {
+      message.success("Successfully logged in", 1500);
+      return response.data.jwt;
+    } else {
+      message.error("Username or Password are wrong", 1500);
+    }
   } catch (error) {
-    console.error("Login failed:", error);
+    message.error("Username or Password are wrong", 1500);
   }
 };
 

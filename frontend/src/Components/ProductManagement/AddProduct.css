@@ -1,0 +1,30 @@
+.add-product-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.add-product-container {
+  margin-top: 100px;
+  width: 600px;
+  height: auto;
+  overflow: auto;
+  background: transparent;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(100px);
+  color: white;
+  border-radius: 10px;
+  padding: 10px 20px; /* Padding applied here */
+}
+
+.add-new-product-button {
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 200px;
+  margin-top: 50px;
+}

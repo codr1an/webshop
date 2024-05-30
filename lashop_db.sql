@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 28, 2024 at 09:54 PM
+-- Generation Time: May 30, 2024 at 06:53 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,7 +38,8 @@ CREATE TABLE `cart_item` (
 --
 
 INSERT INTO `cart_item` (`id`, `quantity`, `product_id`) VALUES
-(4, 1, 9);
+(8, 6, 10),
+(9, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -60,15 +61,15 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `description`, `image_url`, `name`, `price`, `type`) VALUES
-(1, 'Flagship smartphone from Apple', 'iPhone.png', 'iPhone X', 999.99, 'phone'),
-(2, 'Latest iPhone model with advanced features', 'iPhone.png', 'iPhone 11', 1099.99, 'phone'),
+(1, 'Iphone X, very cool thing\n', 'iPhone.png', 'Iphone X', 999.99, 'phone'),
+(2, 'Latest iPhone model with advanced features', 'iPhone.png', 'iPhone 11', 999.99, 'phone'),
 (3, 'Apple\'s flagship phone with 5G capabilities', 'iPhone.png', 'iPhone 12', 1199.99, 'phone'),
 (4, 'High-end Android smartphone from Samsung', 'iPhone.png', 'Samsung Galaxy S20', 899.99, 'phone'),
 (5, 'Premium Android smartphone with S Pen', 'iPhone.png', 'Samsung Galaxy Note 20', 1099.99, 'phone'),
 (6, 'Google\'s flagship smartphone with excellent camera', 'iPhone.png', 'Google Pixel 5', 799.99, 'phone'),
 (7, 'Powerful Android smartphone with a smooth display', 'iPhone.png', 'OnePlus 8 Pro', 899.99, 'phone'),
 (8, 'Thin and light tablet with powerful performance', 'iPad.png', 'iPad Air', 599.99, 'tablet'),
-(9, 'Apple\'s premium tablet for professionals', 'iPad.png', 'iPad Pro', 999.99, 'tablet'),
+(9, 'Apple\'s premium tablet for professionals', 'iPad.png', 'iPad Pro', 1111, 'tablet'),
 (10, 'Android tablet with stunning display and S Pen support', 'iPad.png', 'Samsung Galaxy Tab S7', 799.99, 'tablet'),
 (11, 'Versatile tablet with laptop-class performance', 'iPad.png', 'Microsoft Surface Pro 7', 899.99, 'tablet'),
 (12, 'Affordable tablet with vibrant display', 'iPad.png', 'Amazon Fire HD 10', 149.99, 'tablet'),
@@ -96,8 +97,7 @@ INSERT INTO `product` (`id`, `description`, `image_url`, `name`, `price`, `type`
 (34, 'Advanced LED TV with NanoCell technology', 'tv.png', 'LG NanoCell NANO85', 1299.99, 'tv'),
 (35, 'Mid-range LED TV with Triluminos display', 'tv.png', 'Sony X800H', 999.99, 'tv'),
 (36, 'Affordable smart TV with built-in Fire TV', 'tv.png', 'Toshiba Fire TV', 399.99, 'tv'),
-(37, 'Budget-friendly laptop for everyday use', 'laptop.png', 'HP Pavilion', 899.99, 'laptop'),
-(38, 'Entry-level laptop with decent performance', 'laptop.png', 'Acer Aspire 5', 599.99, 'laptop');
+(41, 'Very cool tv', 'tv.png', 'Sony Bravia', 199.99, NULL);
 
 -- --------------------------------------------------------
 
@@ -116,7 +116,8 @@ CREATE TABLE `shopping_cart` (
 --
 
 INSERT INTO `shopping_cart` (`id`, `total_price`, `user_id`) VALUES
-(1, 999.99, 1);
+(1, 5799.93, 1),
+(2, 0, 12);
 
 -- --------------------------------------------------------
 
@@ -134,7 +135,8 @@ CREATE TABLE `shopping_cart_items` (
 --
 
 INSERT INTO `shopping_cart_items` (`shopping_cart_id`, `items_id`) VALUES
-(1, 4);
+(1, 8),
+(1, 9);
 
 -- --------------------------------------------------------
 
@@ -147,16 +149,23 @@ CREATE TABLE `user` (
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `role` varchar(255) DEFAULT NULL,
-  `username` varchar(255) DEFAULT NULL
+  `username` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `email`, `password`, `role`, `username`) VALUES
-(1, 'admin@test.de', '$2a$10$xIYlYjl8LLxlPhNEgtJ/nu2N4GJpd9yp5xanbCicmOXISvT9Krg3W', 'admin', 'admin'),
-(2, 'user@test.de', '$2a$10$xIYlYjl8LLxlPhNEgtJ/nu2N4GJpd9yp5xanbCicmOXISvT9Krg3W', 'user', 'user');
+INSERT INTO `user` (`id`, `email`, `password`, `role`, `username`, `address`, `first_name`, `last_name`) VALUES
+(1, 'admin@test.de', '$2a$10$xIYlYjl8LLxlPhNEgtJ/nu2N4GJpd9yp5xanbCicmOXISvT9Krg3W', 'admin', 'admin', 'Musterstr. 22, 68111 Monem', 'Cool', 'Admin'),
+(2, 'user@test.de', '$2a$10$xIYlYjl8LLxlPhNEgtJ/nu2N4GJpd9yp5xanbCicmOXISvT9Krg3W', 'user', 'user', 'Musterstr. 22, 68121 Monem', 'Lel', 'User'),
+(4, 'asd@dasd2.de', '$2a$10$a11VdFlWl0GX/tekvyveS.uTQSKynfLuSpQB9EIEFvb0U4t8RPMjS', 'user', 'asdd', 'asasd21 sad asd 12d 1 d', 'asdd1dasd', 'asdd12312d'),
+(8, 'user@eight.de', '$2a$10$a11VdFlWl0GX/tekvyveS.AMrEEK7gvRIod965XoTxEaBnPRvjFoO', 'user', 'asdd', 'user eight 77677 eightia', 'user', 'eight123'),
+(12, 'gronkus@monkus.de', '$2a$10$ugzSaPUYLtMNeyScymK.bublsa.3UMoegfhV.pOUH0ZH/V24e85HC', 'user', 'gronk', 'gronkasdon213odbn d', 'gronk', 'monk'),
+(13, '123@123.de', '$2a$10$smC4UTaf0JDAmIjryPkaG.k6gvhEvbyGID9NpADzAkLAK4sO.cQMC', 'user', '12d1', 'hleol23123asdasd', 'firstname', 'lastname');
 
 --
 -- Indexes for dumped tables
@@ -203,25 +212,25 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `cart_item`
 --
 ALTER TABLE `cart_item`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `shopping_cart`
 --
 ALTER TABLE `shopping_cart`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables

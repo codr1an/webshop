@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./UserProfile.css";
 import MenuBar from "../Home/MenuBar/MenuBar";
+import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -26,6 +28,7 @@ const UserProfile = () => {
       } catch (error) {
         setError(error);
         setLoading(false);
+        navigate("/home");
       }
     };
 
