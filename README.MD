@@ -28,6 +28,8 @@ If you don't host your Database locally using XAMPP you will have to update the 
 
 - [x] **Shopping Cart**: Users can add products to their shopping cart, view the contents of the cart, update quantities, and proceed to checkout.
 
+- [ ] **Order handling and history**: Users can send orders, they will recieve a overview of their order and they can then see their order history on their Profile page.
+
 ## Technologies
 
 - **Frontend**: React
