@@ -9,13 +9,33 @@ const MenuBar = () => {
   const navigate = useNavigate();
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
   const [token, setToken] = useState(null);
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
+      fetchUserInfo(storedToken);
     }
   }, []);
+
+  const fetchUserInfo = async (token) => {
+    try {
+      const response = await fetch("http://localhost:8080/api/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setRole(data.role);
+      } else {
+        console.error("Failed to fetch user info");
+      }
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+    }
+  };
 
   const handleUserMenu = () => {
     setUserMenuOpen(!isUserMenuOpen);
@@ -28,10 +48,15 @@ const MenuBar = () => {
       navigate("/login");
     } else if (option === "register") {
       navigate("/register");
+    } else if (option === "manageUsers") {
+      navigate("/user-management");
+    } else if (option === "manageProducts") {
+      navigate("/product-management");
     } else if (option === "logout") {
       message.success("You have been logged out", 1500);
       localStorage.removeItem("token");
       setToken(null);
+      setRole(null); // Reset the role state
       navigate("/home");
     }
     setUserMenuOpen(false);
@@ -45,12 +70,12 @@ const MenuBar = () => {
     <header>
       <div className="menu-container">
         <div className="menu-bar">
-          <div class="logo-container">
-            <a href="/home" class="logo-link">
-              <img src={logo} alt="Logo" class="logo-img" />
+          <div className="logo-container">
+            <a href="/home" className="logo-link">
+              <img src={logo} alt="Logo" className="logo-img" />
             </a>
-            <a href="/home" class="logo-text-link">
-              <h2 class="logo-text">LA-Shop</h2>
+            <a href="/home" className="logo-text-link">
+              <h2 className="logo-text">LA-Shop</h2>
             </a>
           </div>
           <div className="search-bar">
@@ -67,6 +92,18 @@ const MenuBar = () => {
                     <button onClick={() => handleUserOption("profile")}>
                       Profile
                     </button>
+                    {role === "admin" && (
+                      <button onClick={() => handleUserOption("manageUsers")}>
+                        Users
+                      </button>
+                    )}
+                    {role === "admin" && (
+                      <button
+                        onClick={() => handleUserOption("manageProducts")}
+                      >
+                        Products
+                      </button>
+                    )}
                     <button onClick={() => handleUserOption("logout")}>
                       Logout
                     </button>
@@ -103,7 +140,7 @@ const MenuBar = () => {
             <a href="/monitors" className="category">
               Monitors
             </a>
-          </div>{" "}
+          </div>
         </div>
       </div>
     </header>
