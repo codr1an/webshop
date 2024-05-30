@@ -28,7 +28,6 @@ function LoginForm({ toggleForm }) {
     e.preventDefault();
     const token = await LoginRequest(formData);
     localStorage.setItem("token", token);
-    console.log(token);
     if (token !== undefined) {
       navigate("/home");
     }
@@ -37,12 +36,12 @@ function LoginForm({ toggleForm }) {
   return (
     <div className="wrapper">
       <form onSubmit={handleSubmit}>
-        <h1>Anmelden</h1>
+        <h1>Log in</h1>
         <div className="input-box">
           <input
             type="text"
             name="username"
-            placeholder="Benutzername"
+            placeholder="Username"
             value={formData.username}
             onChange={handleChange}
           />
@@ -52,7 +51,7 @@ function LoginForm({ toggleForm }) {
           <input
             type={showPassword ? "text" : "password"}
             name="password"
-            placeholder="Passwort"
+            placeholder="Password"
             value={formData.password}
             onChange={handleChange}
           />
@@ -62,14 +61,14 @@ function LoginForm({ toggleForm }) {
           />{" "}
         </div>
         <div className="forgot">
-          <a href="resetPassword">Passwort vergessen?</a>
+          <a href="resetPassword">Forgot Password?</a>
         </div>
         <button type="submit" className="submit-button">
-          Anmelden
+          Log in
         </button>
         <div className="register-link">
           <p>
-            Noch nicht registriert? <a href="register">Registrieren</a>
+            Not registered yet? <a href="register">Register</a>
           </p>
         </div>
       </form>

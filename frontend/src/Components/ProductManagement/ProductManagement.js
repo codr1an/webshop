@@ -7,8 +7,14 @@ import { message } from "react-message-popup";
 const ProductManagement = () => {
   const [products, setProducts] = useState(null);
   const navigate = useNavigate();
+  const userRole = localStorage.getItem("role");
 
   useEffect(() => {
+    if (userRole !== "admin") {
+      navigate("/home");
+      return;
+    }
+
     const fetchProducts = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -28,11 +34,16 @@ const ProductManagement = () => {
         setProducts(data);
       } catch (error) {
         console.error("Error fetching products:", error);
+        navigate("/home");
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [navigate, userRole]);
+
+  if (userRole !== "admin" || !products) {
+    return <div>Loading...</div>;
+  }
 
   if (!products) {
     return <div>Loading...</div>;

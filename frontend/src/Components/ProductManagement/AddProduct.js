@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "react-message-popup";
 import MenuBar from "../Home/MenuBar/MenuBar";
@@ -12,12 +12,22 @@ const AddProduct = () => {
     imageUrl: "",
   });
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState("");
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    setUserRole(role);
+    // If user is not admin, redirect
+    if (role !== "admin") {
+      navigate("/home");
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value.slice(0, 500), // Cap at 500 characters
+      [name]: value.slice(0, 255), // 255 because database field is set to 255 chars
     });
   };
 

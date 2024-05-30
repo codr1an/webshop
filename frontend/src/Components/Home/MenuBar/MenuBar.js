@@ -29,6 +29,7 @@ const MenuBar = () => {
       if (response.ok) {
         const data = await response.json();
         setRole(data.role);
+        localStorage.setItem("role", data.role); // Store role in local storage
       } else {
         console.error("Failed to fetch user info");
       }
@@ -55,8 +56,9 @@ const MenuBar = () => {
     } else if (option === "logout") {
       message.success("You have been logged out", 1500);
       localStorage.removeItem("token");
+      localStorage.removeItem("role");
       setToken(null);
-      setRole(null); // Reset the role state
+      setRole(null);
       navigate("/home");
     }
     setUserMenuOpen(false);

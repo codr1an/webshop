@@ -14,8 +14,14 @@ const EditProduct = () => {
     imageUrl: "",
   });
   const navigate = useNavigate();
+  const userRole = localStorage.getItem("role");
 
   useEffect(() => {
+    if (userRole !== "admin") {
+      navigate("/home");
+      return;
+    }
+
     const fetchProduct = async () => {
       try {
         const response = await fetch(
@@ -35,7 +41,7 @@ const EditProduct = () => {
     };
 
     fetchProduct();
-  }, [productId]);
+  }, [productId, navigate, userRole]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,7 +79,7 @@ const EditProduct = () => {
     }
   };
 
-  if (!product) {
+  if (userRole !== "admin" || !product) {
     return <div>Loading...</div>;
   }
 

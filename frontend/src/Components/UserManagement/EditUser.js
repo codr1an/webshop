@@ -52,6 +52,7 @@ function EditUser({ toggleForm }) {
         });
       } catch (error) {
         console.error("Error fetching user details:", error);
+        navigate("/home");
       }
     };
 
