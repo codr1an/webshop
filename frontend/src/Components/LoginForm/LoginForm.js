@@ -60,9 +60,7 @@ function LoginForm({ toggleForm }) {
             onClick={togglePasswordVisibility}
           />{" "}
         </div>
-        <div className="forgot">
-          <a href="resetPassword">Forgot Password?</a>
-        </div>
+
         <button type="submit" className="submit-button">
           Log in
         </button>

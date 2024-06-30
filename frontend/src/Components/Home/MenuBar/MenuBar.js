@@ -29,7 +29,7 @@ const MenuBar = () => {
       if (response.ok) {
         const data = await response.json();
         setRole(data.role);
-        localStorage.setItem("role", data.role); // Store role in local storage
+        localStorage.setItem("role", data.role);
       } else {
         console.error("Failed to fetch user info");
       }
@@ -53,6 +53,8 @@ const MenuBar = () => {
       navigate("/user-management");
     } else if (option === "manageProducts") {
       navigate("/product-management");
+    } else if (option === "orders") {
+      navigate("/all-orders");
     } else if (option === "logout") {
       message.success("You have been logged out", 1500);
       localStorage.removeItem("token");
@@ -104,6 +106,11 @@ const MenuBar = () => {
                         onClick={() => handleUserOption("manageProducts")}
                       >
                         Products
+                      </button>
+                    )}
+                    {role === "admin" && (
+                      <button onClick={() => handleUserOption("orders")}>
+                        Orders
                       </button>
                     )}
                     <button onClick={() => handleUserOption("logout")}>

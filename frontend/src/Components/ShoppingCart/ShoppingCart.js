@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ShoppingCart.css";
 import MenuBar from "../Home/MenuBar/MenuBar";
+import { message } from "react-message-popup";
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
@@ -24,8 +25,8 @@ const ShoppingCart = () => {
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch cart");
+        if (response.status === 403) {
+          navigate("/home");
         }
 
         const data = await response.json();
@@ -55,16 +56,55 @@ const ShoppingCart = () => {
         body: JSON.stringify({ itemId }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to delete item from cart");
-      }
-
       setCart((prevCart) => ({
         ...prevCart,
         items: prevCart.items.filter((item) => item.id !== itemId),
       }));
     } catch (error) {
       console.error("Error deleting item:", error);
+    }
+  };
+
+  const handleOrder = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/orders`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to clear cart");
+      }
+
+      const updatedCartResponse = await fetch(
+        "http://localhost:8080/api/cart",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!updatedCartResponse.ok) {
+        throw new Error("Failed to fetch updated cart");
+      }
+
+      const updatedCartData = await updatedCartResponse.json();
+      message.success("Order placed successfully", 1000);
+      setCart(updatedCartData);
+    } catch (error) {
+      message.error("Order couldn't be placed", 1000);
     }
   };
 
@@ -142,7 +182,7 @@ const ShoppingCart = () => {
     }
   };
 
-  if (!cart) {
+  if (!cart || !cart.items) {
     return <div>Loading...</div>;
   }
 
@@ -165,7 +205,7 @@ const ShoppingCart = () => {
                 />
                 <div className="item-details">
                   <h3>{item.product.name}</h3>
-                  <p>Price: ${item.product.price}</p>
+                  <p>Price: {item.product.price}€</p>
                 </div>
                 <div className="item-actions">
                   <select
@@ -186,8 +226,10 @@ const ShoppingCart = () => {
             ))}
           </div>
           <div className="cart-overview">
-            <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
-            <button className="order-button">Order Now</button>
+            <h3>Total Price: {totalPrice.toFixed(2)}€</h3>
+            <button className="order-button" onClick={handleOrder}>
+              Order Now
+            </button>
           </div>
           <button className="clear-button" onClick={handleClearCart}>
             Clear cart

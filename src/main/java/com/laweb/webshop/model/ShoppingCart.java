@@ -10,7 +10,7 @@ public class ShoppingCart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -56,5 +56,4 @@ public class ShoppingCart {
                 .sum();
     }
 
-    // Getters and Setters
 }

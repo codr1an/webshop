@@ -16,7 +16,6 @@ function EditUser({ toggleForm }) {
     lastName: "",
     address: "",
     email: "",
-    password: "",
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -24,10 +23,7 @@ function EditUser({ toggleForm }) {
     lastName: "",
     address: "",
     email: "",
-    password: "",
   });
-
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -48,7 +44,6 @@ function EditUser({ toggleForm }) {
           lastName: userData.lastName,
           address: userData.address,
           email: userData.email,
-          password: "",
         });
       } catch (error) {
         console.error("Error fetching user details:", error);
@@ -57,7 +52,7 @@ function EditUser({ toggleForm }) {
     };
 
     fetchUserDetails();
-  }, [userId]);
+  }, [userId, navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -68,10 +63,6 @@ function EditUser({ toggleForm }) {
       ...formErrors,
       [e.target.name]: "",
     });
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -90,7 +81,7 @@ function EditUser({ toggleForm }) {
         accept: "*/*",
         "x-api-key": "keyTest",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Add Authorization header
+        Authorization: `Bearer ${token}`,
       };
 
       const response = await axios.put(
@@ -106,7 +97,7 @@ function EditUser({ toggleForm }) {
     } catch (error) {
       console.error("Error updating user:", error);
       if (error.response && error.response.status === 409) {
-        message.error("Benutzername oder E-Mail bereits registriert", 4000);
+        message.error("Username or email already registered", 4000);
       }
     }
   };
@@ -175,24 +166,6 @@ function EditUser({ toggleForm }) {
           <CiMail className="icon" />
           {formErrors.email && (
             <p className="error-message">{formErrors.email}</p>
-          )}
-        </div>
-        <div className={`input-box ${formErrors.password && "error-message"}`}>
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="input-field"
-            maxLength={100}
-          />
-          <CiLock
-            className="password-icon icon"
-            onClick={togglePasswordVisibility}
-          />{" "}
-          {formErrors.password && (
-            <p className="error-message">{formErrors.password}</p>
           )}
         </div>
         <button type="submit" className="button">
