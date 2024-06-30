@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 30, 2024 at 06:53 PM
+-- Generation Time: Jun 30, 2024 at 01:57 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,13 +33,32 @@ CREATE TABLE `cart_item` (
   `product_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `cart_item`
+-- Table structure for table `orders`
 --
 
-INSERT INTO `cart_item` (`id`, `quantity`, `product_id`) VALUES
-(8, 6, 10),
-(9, 1, 1);
+CREATE TABLE `orders` (
+  `id` bigint(20) NOT NULL,
+  `total_price` double NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `date` datetime(6) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_item`
+--
+
+CREATE TABLE `order_item` (
+  `id` bigint(20) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `order_id` bigint(20) DEFAULT NULL,
+  `product_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -61,7 +80,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `description`, `image_url`, `name`, `price`, `type`) VALUES
-(1, 'Iphone X, very cool thing\n', 'iPhone.png', 'Iphone X', 999.99, 'phone'),
+(1, 'Iphone X, very cool thing\n', 'iPhone.png', 'iPhone X', 1299.99, 'phone'),
 (2, 'Latest iPhone model with advanced features', 'iPhone.png', 'iPhone 11', 999.99, 'phone'),
 (3, 'Apple\'s flagship phone with 5G capabilities', 'iPhone.png', 'iPhone 12', 1199.99, 'phone'),
 (4, 'High-end Android smartphone from Samsung', 'iPhone.png', 'Samsung Galaxy S20', 899.99, 'phone'),
@@ -92,12 +111,11 @@ INSERT INTO `product` (`id`, `description`, `image_url`, `name`, `price`, `type`
 (29, 'Latest flagship smartphone from Samsung', 'iPhone.png', 'Samsung Galaxy S21', 1199.99, 'phone'),
 (30, 'Affordable Android smartphone with great camera', 'iPhone.png', 'Google Pixel 4a', 499.99, 'phone'),
 (31, 'Compact and portable tablet from Apple', 'iPad.png', 'iPad Mini', 399.99, 'tablet'),
-(32, 'Budget-friendly Android tablet with large display', 'iPad.png', 'Samsung Galaxy Tab A7', 299.99, 'tablet'),
+(32, 'Budget-friendly Android tablet with large display', 'iPad.png', 'Samsung Galaxy Tab A7', 2999.99, 'tablet'),
 (33, 'Lightweight and versatile tablet for productivity', 'iPad.png', 'Microsoft Surface Go 2', 499.99, 'tablet'),
 (34, 'Advanced LED TV with NanoCell technology', 'tv.png', 'LG NanoCell NANO85', 1299.99, 'tv'),
 (35, 'Mid-range LED TV with Triluminos display', 'tv.png', 'Sony X800H', 999.99, 'tv'),
-(36, 'Affordable smart TV with built-in Fire TV', 'tv.png', 'Toshiba Fire TV', 399.99, 'tv'),
-(41, 'Very cool tv', 'tv.png', 'Sony Bravia', 199.99, NULL);
+(50, 'Sony TV', 'tv.png', 'Sony UNBRAVIA 2022', 123.22, 'tv');
 
 -- --------------------------------------------------------
 
@@ -116,8 +134,12 @@ CREATE TABLE `shopping_cart` (
 --
 
 INSERT INTO `shopping_cart` (`id`, `total_price`, `user_id`) VALUES
-(1, 5799.93, 1),
-(2, 0, 12);
+(1, 0, 1),
+(2, 0, NULL),
+(3, 0, 2),
+(4, 0, NULL),
+(5, 0, NULL),
+(6, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -129,14 +151,6 @@ CREATE TABLE `shopping_cart_items` (
   `shopping_cart_id` bigint(20) NOT NULL,
   `items_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `shopping_cart_items`
---
-
-INSERT INTO `shopping_cart_items` (`shopping_cart_id`, `items_id`) VALUES
-(1, 8),
-(1, 9);
 
 -- --------------------------------------------------------
 
@@ -162,10 +176,7 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`id`, `email`, `password`, `role`, `username`, `address`, `first_name`, `last_name`) VALUES
 (1, 'admin@test.de', '$2a$10$xIYlYjl8LLxlPhNEgtJ/nu2N4GJpd9yp5xanbCicmOXISvT9Krg3W', 'admin', 'admin', 'Musterstr. 22, 68111 Monem', 'Cool', 'Admin'),
 (2, 'user@test.de', '$2a$10$xIYlYjl8LLxlPhNEgtJ/nu2N4GJpd9yp5xanbCicmOXISvT9Krg3W', 'user', 'user', 'Musterstr. 22, 68121 Monem', 'Lel', 'User'),
-(4, 'asd@dasd2.de', '$2a$10$a11VdFlWl0GX/tekvyveS.uTQSKynfLuSpQB9EIEFvb0U4t8RPMjS', 'user', 'asdd', 'asasd21 sad asd 12d 1 d', 'asdd1dasd', 'asdd12312d'),
-(8, 'user@eight.de', '$2a$10$a11VdFlWl0GX/tekvyveS.AMrEEK7gvRIod965XoTxEaBnPRvjFoO', 'user', 'asdd', 'user eight 77677 eightia', 'user', 'eight123'),
-(12, 'gronkus@monkus.de', '$2a$10$ugzSaPUYLtMNeyScymK.bublsa.3UMoegfhV.pOUH0ZH/V24e85HC', 'user', 'gronk', 'gronkasdon213odbn d', 'gronk', 'monk'),
-(13, '123@123.de', '$2a$10$smC4UTaf0JDAmIjryPkaG.k6gvhEvbyGID9NpADzAkLAK4sO.cQMC', 'user', '12d1', 'hleol23123asdasd', 'firstname', 'lastname');
+(4, 'max@mustermann.de', '$2a$10$vtvw6.lBIs2uA5SC9HNOTuAuIsQNWaGrLhN0T8OlEOuQuQxHyOFlu', 'user', 'asdd', 'Musterstr. 1, 11111 zxc', 'Max', 'Mustermann');
 
 --
 -- Indexes for dumped tables
@@ -177,6 +188,21 @@ INSERT INTO `user` (`id`, `email`, `password`, `role`, `username`, `address`, `f
 ALTER TABLE `cart_item`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FKjcyd5wv4igqnw413rgxbfu4nv` (`product_id`);
+
+--
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKel9kyl84ego2otj2accfd8mr7` (`user_id`);
+
+--
+-- Indexes for table `order_item`
+--
+ALTER TABLE `order_item`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FKt4dc2r9nbvbujrljv3e23iibt` (`order_id`),
+  ADD KEY `FK551losx9j75ss5d6bfsqvijna` (`product_id`);
 
 --
 -- Indexes for table `product`
@@ -212,25 +238,37 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `cart_item`
 --
 ALTER TABLE `cart_item`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+
+--
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `order_item`
+--
+ALTER TABLE `order_item`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `shopping_cart`
 --
 ALTER TABLE `shopping_cart`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables
@@ -241,6 +279,19 @@ ALTER TABLE `user`
 --
 ALTER TABLE `cart_item`
   ADD CONSTRAINT `FKjcyd5wv4igqnw413rgxbfu4nv` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
+
+--
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `FKel9kyl84ego2otj2accfd8mr7` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+--
+-- Constraints for table `order_item`
+--
+ALTER TABLE `order_item`
+  ADD CONSTRAINT `FK551losx9j75ss5d6bfsqvijna` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
+  ADD CONSTRAINT `FKt4dc2r9nbvbujrljv3e23iibt` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
 
 --
 -- Constraints for table `shopping_cart`
