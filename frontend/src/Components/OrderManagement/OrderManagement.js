@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./UserProfile.css";
 import MenuBar from "../Home/MenuBar/MenuBar";
+import "./OrderManagement.css";
 import { useNavigate } from "react-router-dom";
 
-const UserProfile = () => {
-  const [user, setUser] = useState(null);
+const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const userRole = localStorage.getItem("role");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    if (userRole !== "admin") {
+      navigate("/home");
+      return;
+    }
+
+    const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("token");
         const headers = {
@@ -20,23 +25,54 @@ const UserProfile = () => {
           Authorization: `Bearer ${token}`,
         };
 
-        const [userResponse, ordersResponse] = await Promise.all([
-          axios.get("http://localhost:8080/api/users/me", { headers: headers }),
-          axios.get("http://localhost:8080/api/orders", { headers: headers }),
-        ]);
+        const response = await axios.get(
+          "http://localhost:8080/api/orders/all",
+          {
+            headers,
+          }
+        );
 
-        setUser(userResponse.data);
-        setOrders(ordersResponse.data);
+        setOrders(response.data);
         setLoading(false);
       } catch (error) {
+        navigate("/home");
         setError(error);
         setLoading(false);
-        navigate("/home");
       }
     };
 
-    fetchUserData();
-  }, [navigate]);
+    fetchOrders();
+  }, []);
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      const token = localStorage.getItem("token");
+      const headers = {
+        accept: "*/*",
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+
+      const statusUpdateDTO = { status: newStatus };
+
+      await axios.put(
+        `http://localhost:8080/api/orders/${orderId}/status`,
+        statusUpdateDTO,
+        {
+          headers,
+        }
+      );
+
+      // Update the orders state to reflect the new status
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+    } catch (error) {
+      setError(error);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -46,17 +82,13 @@ const UserProfile = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  if (!user) {
-    return <div>No user data available</div>;
-  }
-
   return (
     <div className="front-page">
       <MenuBar />
-      <div className="user-page">
+      <div className="orders-page">
+        <h1>All Orders</h1>
         <div className="order-container">
           <div className="order-items">
-            <h3>Your Orders</h3>
             {orders.length === 0 ? (
               <p>No orders available</p>
             ) : (
@@ -73,6 +105,14 @@ const UserProfile = () => {
 
                 return (
                   <div key={index} className="order-item">
+                    <ul>
+                      <p>
+                        <b>User: </b>
+                        {order.firstName} {order.lastName}
+                      </p>
+                      <p>{order.address} </p>
+                    </ul>
+
                     <p>
                       <b>Date:</b> {`${day}.${month}.${year}`}
                     </p>
@@ -90,26 +130,25 @@ const UserProfile = () => {
                     <p>
                       <b>Total Price:</b> {order.totalPrice}€
                     </p>
-                    <p>
-                      <b>Status:</b> {order.status}
-                    </p>
+                    <ul>
+                      <p>
+                        <b>Status:</b> {order.status}
+                      </p>
+                      <select
+                        value={order.status}
+                        onChange={(e) =>
+                          handleStatusChange(order.id, e.target.value)
+                        }
+                      >
+                        <option value="ordered">ordered</option>
+                        <option value="paid">paid</option>
+                        <option value="in delivery">in delivery</option>
+                      </select>
+                    </ul>
                   </div>
                 );
               })
             )}
-          </div>
-          <div className="user-profile">
-            <h3>Profile</h3>
-            <p>
-              <b>Username:</b> {user.username}
-            </p>
-            <p>
-              {" "}
-              <b>E-Mail: </b> {user.email}
-            </p>
-            <p>
-              <b>Address:</b> {user.address}
-            </p>
           </div>
         </div>
       </div>
@@ -117,4 +156,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default OrderManagement;

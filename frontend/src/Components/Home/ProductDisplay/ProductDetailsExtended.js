@@ -22,10 +22,13 @@ const ProductDetails = ({ product }) => {
         body: JSON.stringify({ productId: product.id, quantity: 1 }),
       });
 
+      if (response.status === 403) {
+        navigate("/login");
+      }
+
       if (!response.ok) {
         throw new Error("Failed to add product to cart");
       }
-
       message.success("Item added", 1500);
       console.log("Product added to cart successfully");
     } catch (error) {
@@ -45,7 +48,7 @@ const ProductDetails = ({ product }) => {
       </div>
       <div className="product-info">
         <h2>{product.name}</h2>
-        <p>Price: ${product.price}</p>
+        <p>Price: {product.price}€</p>
         <p>{product.description}</p>
         <button type="button" onClick={handleAddToCart}>
           Add to cart

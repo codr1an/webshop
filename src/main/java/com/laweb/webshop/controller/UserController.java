@@ -5,14 +5,15 @@ import com.laweb.webshop.model.User;
 import com.laweb.webshop.dto.UpdateUserDTO;
 import com.laweb.webshop.model.LoginBody;
 import com.laweb.webshop.model.RegistrationBody;
+import com.laweb.webshop.model.ShoppingCart;
 import com.laweb.webshop.repository.UserRepository;
+import com.laweb.webshop.repository.ShoppingCartRepository;
 import com.laweb.webshop.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,16 +21,19 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     private final UserRepository userRepository;
+    private final ShoppingCartRepository shoppingCartRepository; // Inject ShoppingCartRepository
     private final UserService userService;
 
-    public UserController(UserRepository userRepository, UserService userService) {
+    public UserController(UserRepository userRepository, ShoppingCartRepository shoppingCartRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.shoppingCartRepository = shoppingCartRepository;
         this.userService = userService;
     }
 
@@ -38,12 +42,11 @@ public class UserController {
             @ApiResponse(responseCode = "201", description = "User created"),
             @ApiResponse(responseCode = "409", description = "Username or email already exists")
     })
-    
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody RegistrationBody userDto) {
         return userService.registerUser(userDto);
     }
-    
+
     @Operation(summary = "Login user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Login successful"),
@@ -53,11 +56,11 @@ public class UserController {
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginBody loginBody) {
         String jwt = userService.loginUser(loginBody);
         if (jwt == null) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } else {
-        LoginResponse response = new LoginResponse();
-        response.setJwt(jwt);
-        return ResponseEntity.ok(response);
+            LoginResponse response = new LoginResponse();
+            response.setJwt(jwt);
+            return ResponseEntity.ok(response);
         }
     }
 
@@ -75,11 +78,8 @@ public class UserController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@Parameter(description = "User ID") @PathVariable Long id) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(user);
+        Optional<User> optionalUser = userRepository.findById(id);
+        return optionalUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PreAuthorize("hasRole('admin')")
@@ -91,10 +91,9 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@Parameter(description = "User ID") @PathVariable Long id,
                                            @Valid @RequestBody UpdateUserDTO updatedUserDto) {
-        ResponseEntity<User> responseEntity = userService.updateUser(id, updatedUserDto);
-        return responseEntity;
+        return userService.updateUser(id, updatedUserDto);
     }
-    
+
     @PreAuthorize("hasRole('admin')")
     @Operation(summary = "Delete user")
     @ApiResponses(value = {
@@ -103,15 +102,31 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@Parameter(description = "User ID") @PathVariable Long id) {
-        if (!userRepository.existsById(id)) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+        User user = optionalUser.get();
+
+        // Fetch all shopping carts associated with the user
+        List<ShoppingCart> shoppingCarts = shoppingCartRepository.findAllByUser(user);
+
+        // Disassociate user from shopping carts
+        shoppingCarts.forEach(cart -> cart.setUser(null));
+        shoppingCartRepository.saveAll(shoppingCarts); // Save changes to disassociate user
+
+        // Delete all shopping carts associated with the user
+        shoppingCartRepository.deleteAllByUser(user);
+
+        // Now delete the user
         userRepository.deleteById(id);
+
         return ResponseEntity.noContent().build();
     }
-    
+
     @GetMapping("/me")
     public User getLoggedInUserProfile(@AuthenticationPrincipal User user) {
-      return user;
+        return user;
     }
 }

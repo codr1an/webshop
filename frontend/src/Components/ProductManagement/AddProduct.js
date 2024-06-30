@@ -10,7 +10,9 @@ const AddProduct = () => {
     description: "",
     price: "",
     imageUrl: "",
+    type: "",
   });
+
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState("");
 
@@ -27,12 +29,33 @@ const AddProduct = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value.slice(0, 255), // 255 because database field is set to 255 chars
+      [name]: value.slice(0, 255), // Limiting input to 255 characters
+    });
+  };
+
+  const handleCategoryChange = (e) => {
+    const { value } = e.target;
+    setFormData({
+      ...formData,
+      type: value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if all fields are filled
+    if (
+      !formData.name ||
+      !formData.description ||
+      !formData.price ||
+      !formData.imageUrl ||
+      !formData.type
+    ) {
+      message.error("Please fill out all fields");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(`http://localhost:8080/api/products`, {
@@ -71,6 +94,7 @@ const AddProduct = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  maxLength={30}
                 />
               </div>
               <div className="form-group">
@@ -93,12 +117,28 @@ const AddProduct = () => {
                 />
               </div>
               <div className="form-group">
+                <label>Category:</label>
+                <select
+                  name="type"
+                  value={formData.type}
+                  onChange={handleCategoryChange}
+                >
+                  <option value="">Select type</option>
+                  <option value="tv">TV</option>
+                  <option value="phone">Phone</option>
+                  <option value="laptop">Laptop</option>
+                  <option value="tablet">Tablet</option>
+                  <option value="monitor">Monitor</option>
+                </select>
+              </div>
+              <div className="form-group">
                 <label>Image URL:</label>
                 <input
                   type="text"
                   name="imageUrl"
                   value={formData.imageUrl}
                   onChange={handleChange}
+                  maxLength={255}
                 />
               </div>
               <button type="submit" className="add-new-product-button">

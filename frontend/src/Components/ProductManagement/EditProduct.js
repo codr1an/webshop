@@ -126,6 +126,7 @@ const EditProduct = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  maxLength={30}
                 />
               </div>
               <div className="form-group">
@@ -154,6 +155,7 @@ const EditProduct = () => {
                   name="imageUrl"
                   value={formData.imageUrl}
                   onChange={handleChange}
+                  maxLength={255}
                 />
               </div>
               <button type="submit" className="update-product-button ">

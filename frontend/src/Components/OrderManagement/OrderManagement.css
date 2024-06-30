@@ -1,4 +1,4 @@
-.user-page {
+.orders-page {
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -8,9 +8,9 @@
 
 .order-container {
   display: flex;
-  width: 100%;
-  max-width: 1200px;
-  position: relative;
+  justify-content: space-between;
+  width: 1200px;
+  margin-top: 20px;
 }
 
 .order-items {
@@ -64,12 +64,8 @@
   list-style-type: none;
 }
 
-p1 {
-  font-weight: bold;
-}
-
 .order-item p {
-  width: 220px;
+  width: 300px;
   margin-bottom: 5px;
 }
 

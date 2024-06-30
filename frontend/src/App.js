@@ -12,6 +12,7 @@ import EditUser from "./Components/UserManagement/EditUser";
 import ProductManagement from "./Components/ProductManagement/ProductManagement";
 import EditProduct from "./Components/ProductManagement/EditProduct";
 import AddProduct from "./Components/ProductManagement/AddProduct";
+import OrderManagement from "./Components/OrderManagement/OrderManagement";
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
         <Route path="/product-management" element={<ProductManagement />} />
         <Route path="/edit-product/:productId" element={<EditProduct />} />
         <Route path="/add-product" element={<AddProduct />} />
+        <Route path="/all-orders" element={<OrderManagement />} />
       </Routes>
     </Router>
   );

@@ -13,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-// TODO: Change endpoint names after rest standard
 @RestController
 @RequestMapping("/api/cart")
 public class ShoppingCartController {
@@ -127,4 +126,5 @@ public class ShoppingCartController {
 
         return ResponseEntity.noContent().build();
     }
+    
 }
